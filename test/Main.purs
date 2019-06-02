@@ -1,42 +1,69 @@
 module Test.Main where
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (EXCEPTION)
+import Prelude
+
+import Data.Either (Either(..))
+import Data.Maybe (Maybe(..))
+import Data.Nullable (Nullable, toMaybe)
+import Effect (Effect)
+import Effect.Aff (Aff, launchAff_)
+import Effect.Class (liftEffect)
+import Effect.Class.Console (log)
+import Effect.Unsafe (unsafePerformEffect)
 import FirebaseTestConfig (firebaseConfig)
-import Prelude (Unit, bind, discard)
-import Test.Authentication (authenticationSpec)
-import Test.Authorization (authorizationSpec)
-import Test.DataSnapshotSpec (dataSnapshotSpec)
-import Test.RefSpec (refSpec)
-import Test.Spec (Spec)
-import Test.Spec.Reporter.Console (consoleReporter)
-import Test.Spec.Runner (RunnerEffects, run)
-import Web.Firebase (auth, initializeApp, database, rootRefFor)
-import Web.Firebase.Authentication.Types (Auth)
-import Web.Firebase.Types (FirebaseEff)
-import Web.Firebase.Types as FBT
+import Simple.JSON (read, write)
+import Web.Firebase (authWithApp, collection, doc, firestore, initializeApp, onAuthStateChanged, signInWithEmailAndPassword)
+import Web.Firebase.Firestore.Auth.Type (UserInfo)
+import Web.Firebase.Firestore.CollectionReference as Col
+import Web.Firebase.Firestore.DocumentReference as Doc
+import Web.Firebase.Firestore.DocumentSnapshot as SN
 
-root :: String
-root =  "https://purescript-spike.firebaseio.com/"
-
-type FbSpecEffects e = (err :: EXCEPTION, firebase :: FirebaseEff | e)
-type FbSpecRunnerEffects e = RunnerEffects (FbSpecEffects e)
-
-main ::  forall eff. Eff (FbSpecRunnerEffects eff) Unit
+main :: Effect Unit
 main = do
-  app <- initializeApp firebaseConfig
-  db <- database app
-  ref <- rootRefFor db
-  a <- auth app
-  runTests a ref
+  launchAff_ $ do
+    app ← initializeApp firebaseConfig
+    au ← authWithApp {app : app}
+    void $ onAuthStateChanged au showUser {}
+    _ ← signInWithEmailAndPassword au {email : "email", password : "password"}
 
-runTests ::  forall eff. Auth -> FBT.Firebase  -> Eff (FbSpecRunnerEffects eff) Unit
-runTests auth ref = do run [consoleReporter] (allSpecs auth ref)
+    writedb
+    readdb
 
---allSpecs :: forall eff. StateT (Array (Group (Aff (FbSpecEffects eff) Unit))) Identity Unit
-allSpecs :: forall eff. Auth -> FBT.Firebase -> Spec ( firebase :: FBT.FirebaseEff | eff ) Unit
-allSpecs  auth ref = do
-  refSpec ref
-  authorizationSpec ref
-  authenticationSpec auth
-  dataSnapshotSpec ref
+showUser ∷ Nullable UserInfo → Unit
+showUser r = 
+  case toMaybe r of
+    Just (u ∷ UserInfo) → unsafePerformEffect do
+      log u.displayName
+      log u.email
+    Nothing → unit
+
+writedb ∷ Aff Unit
+writedb =
+  void $ do
+    fs ← firestore
+    co ← collection fs "sample"
+    dc ← Col.doc co {path:"idqSW6F8ROuqgEA9d4du"}
+  -- void $ liftEffect $ (runFn2 Fs._add) co (write myValue)
+    Doc.set dc (write myValue) {}
+  where
+    myValue =
+      { apple: "Hi"
+      , banana: [ 1, 2, 3 ]
+      } ∷ MyRecordAlias
+
+readdb ∷ Aff Unit
+readdb = 
+  void do
+    fs ← firestore
+    dc ← doc fs "/sample/idqSW6F8ROuqgEA9d4du"
+  -- liftEffect $ (Fs.add co ) >>= \q → log "done"
+    sn ← Doc.get dc {}
+    dt ← SN.snapshotdata sn {}
+    liftEffect $ case read dt of
+      Right (r ∷ MyRecordAlias) → log r.apple
+      Left a → log "parse error"
+
+type MyRecordAlias =
+  { apple :: String
+  , banana :: Array Int
+  }

@@ -13,21 +13,22 @@
     "test"
   ],
   "repository": {
-     "type": "git",
-     "url": "git://github.com/mostalive/purescript-firebase.git"
+    "type": "git",
+    "url": "git://github.com/mostalive/purescript-firebase.git"
   },
   "dependencies": {
-    "purescript-console": "3.0.0",
-    "purescript-spec": "1.0.0",
-    "purescript-foreign": "4.0.1",
-    "purescript-nullable": "3.0.0",
-    "purescript-transformers": "3.4.0",
-    "purescript-aff": "3.1",
-    "purescript-foreign-generic": "5.0.0"
+    "purescript-console": "4.2.0",
+    "purescript-spec": "3.1.1",
+    "purescript-foreign": "5.0.0",
+    "purescript-nullable": "4.1.1",
+    "purescript-transformers": "4.2.0",
+    "purescript-aff": "5.1",
+    "purescript-foreign-generic": "10.0.0",
+    "purescript-aff-promise": "^2.1.0"
   },
   "resolutions": {
-    "purescript-console": "3.0.0",
-    "purescript-transformers": "3.4.0",
+    "purescript-console": "4.2.0",
+    "purescript-transformers": "4.2.0",
     "purescript-either": "1.0.0",
     "purescript-arrays": "1.0.0",
     "purescript-functions": "1.0.0-rc.1",
@@ -55,6 +56,6 @@
     "purescript-identity": "1.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0"
+    "purescript-psci-support": "^4.0.0"
   }
 }

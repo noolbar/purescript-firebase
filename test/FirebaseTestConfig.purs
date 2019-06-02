@@ -5,10 +5,11 @@ import Web.Firebase.Types (FirebaseConfig, mkFirebaseConfig)
 
 firebaseConfig ::  FirebaseConfig
 firebaseConfig = mkFirebaseConfig {
-    apiKey: "AIzaSyAyPNxC9QM8TsF_EfyyPVcPSpI5W8ARoa8",
-    authDomain: "purescript-spike.firebaseapp.com",
-    databaseURL: "https://purescript-spike.firebaseio.com",
-    projectId: "purescript-spike",
-    storageBucket: "purescript-spike.appspot.com",
-    messagingSenderId: "770384530890"}
--- somewhere else: firebase.initializeApp(config);
+    apiKey: "<apiKey>"
+  , appId: "<appId>"
+  , authDomain: "<authDomain>"
+  , databaseURL: "<databaseURL>"
+  , messagingSenderId: "<id>"
+  , projectId: "<pro>"
+  , storageBucket: "<storageBucket>"
+  }

@@ -1,15 +1,37 @@
+# Dot files
+.psci
+.pulp-cache
+.purs-repl
+.package-lock
+.psc-ide-port
+.cache
+*.swp
 *.tix
-tags
-\#todo.org\#
+*~
+.psc-package
+/.psci*
+/.pulp-cache/
+
+# Dependencies
+.psci_modules
 /bower_components/
 /node_modules/
-/.pulp-cache/
+
+# Generated
 /output/
-/.psci*
-/src/.webpack.js
-*.swp
-/test/rules.json
-firebase.json
+dist
+*.lock
+*.map
 docs
-.psc-package
-*~
+
+# for Private
+/src/.webpack.js
+/test/rules.json
+
+\#todo.org\#
+firebase.json
+tags
+
+
+
+
