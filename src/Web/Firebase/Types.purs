@@ -62,6 +62,8 @@ instance eqFirestoreErr ∷ Eq FirestoreError where
 ------------
 foreign import data App ∷ Type
 foreign import data Auth ∷ Type
+foreign import data OAuthCredential ∷ Type
+foreign import data GithubAuthProvider ∷ Type
 -------------
 foreign import data Database ∷ Type
 instance dbDatabase ∷ Dblike Database
@@ -125,9 +127,9 @@ data WhereFilterOp = LTOp
                    | ArrayContainsOp
 instance showDWhereFilterOp ∷ Show WhereFilterOp where
   show t = case t of
-    LTOp → "<" 
+    LTOp → "<"
     LTEQOp → "<="
-    EQOp → "==" 
+    EQOp → "=="
     GTEQOp → ">="
     GTOp → ">"
     ArrayContainsOp → "array-contains"
@@ -141,7 +143,7 @@ data GetOptions = Default
                 | Cache
 instance showGetOptions ∷ Show GetOptions where
   show t = case t of
-    Default → "default" 
+    Default → "default"
     Server → "server"
     Cache → "cache"
 

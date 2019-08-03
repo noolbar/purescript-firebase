@@ -24,6 +24,8 @@ exports._auth = function (opts) {
   };
 };
 
+exports.githubAuthProviderImpl = new firebase.auth.GithubAuthProvider();
+
 exports._database = function (opts) {
   return function () {
     return firebase.database(opts.app);

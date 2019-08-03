@@ -4,7 +4,7 @@ module Web.Firebase.Impl where
 
 import Prelude
 
-import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
+import Data.Function.Uncurried (Fn0, Fn1, Fn2, runFn0, runFn1, runFn2)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
@@ -12,7 +12,7 @@ import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Foreign (Foreign)
 import Prim.Row as Row
-import Web.Firebase.Types (class Dblike, class ToJSON, class ToString, App, Auth, Database, Firebase, FirebaseConfig, Firestore, Storage)
+import Web.Firebase.Types (class ToJSON, class ToString, App, Auth, Database, Firebase, FirebaseConfig, Firestore, GithubAuthProvider, Storage)
 
 
 foreign import _initializeApp ∷ ∀ name. Fn2 FirebaseConfig name (Effect App)
@@ -35,6 +35,8 @@ authWithApp a = liftEffect $ runFn1 _auth a
 
 auth ∷ Aff Auth
 auth = authWithApp {}
+
+foreign import githubAuthProviderImpl ∷ GithubAuthProvider
 
 foreign import _database ∷ ∀ opts. Fn1 opts (Effect Database)
 databaseWithApp ∷ ∀ opts a. Row.Union opts a (app ∷ App) ⇒ {| opts} → Aff Database

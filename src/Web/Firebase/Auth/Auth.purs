@@ -8,11 +8,10 @@ import Control.Promise (Promise)
 import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
+import Foreign (Foreign)
 import Prim.Row as Row
 import Web.Firebase.Aff (runPromiseAffE1, runPromiseAffE2, runPromiseAffE3)
-import Web.Firebase.Firestore.Auth.Type (UserCredentials)
 import Web.Firebase.Types (Auth, Unsubscribe)
 
 
@@ -29,16 +28,16 @@ foreign import _confirmPasswordReset ∷ Fn3 Auth String String (Effect (Promise
 confirmPasswordReset ∷ Auth → String → String → Aff Unit
 confirmPasswordReset q a b = runPromiseAffE3 _confirmPasswordReset q a b
 
-foreign import _createUserWithEmailAndPassword ∷ Fn3 Auth String String (Effect (Promise UserCredentials))
-createUserWithEmailAndPassword ∷ Auth → String → String → Aff UserCredentials
+foreign import _createUserWithEmailAndPassword ∷ Fn3 Auth String String (Effect (Promise Foreign))
+createUserWithEmailAndPassword ∷ Auth → String → String → Aff Foreign
 createUserWithEmailAndPassword q a b = runPromiseAffE3 _createUserWithEmailAndPassword q a b
 
 foreign import _fetchSignInMethodsForEmail ∷ Fn2 Auth String (Effect (Promise (Array String)))
 fetchSignInMethodsForEmail ∷ Auth → String → Aff (Array String)
 fetchSignInMethodsForEmail q a = runPromiseAffE2 _fetchSignInMethodsForEmail q a
 
-foreign import _getRedirectResult ∷ Fn1 Auth (Effect (Promise UserCredentials))
-getRedirectResult ∷ Auth → Aff UserCredentials
+foreign import _getRedirectResult ∷ Fn1 Auth (Effect (Promise Foreign))
+getRedirectResult ∷ Auth → Aff Foreign
 getRedirectResult q = runPromiseAffE1 _getRedirectResult q
 
 foreign import _isSignInWithEmailLink ∷ Fn2 Auth String (Effect Boolean)
@@ -75,29 +74,29 @@ foreign import _setPersistence ∷ Fn2 Auth Persistence (Effect (Promise Unit))
 setPersistence ∷ Auth → Persistence → Aff Unit
 setPersistence q a = runPromiseAffE2 _setPersistence q a
 
--- foreign import _signInAndRetrieveDataWithCredential ∷ Fn2 Auth AuthCredential (Effect (Promise UserCredentials))
--- signInAndRetrieveDataWithCredential ∷ Auth → AuthCredential → Aff UserCredentials
+-- foreign import _signInAndRetrieveDataWithCredential ∷ Fn2 Auth AuthCredential (Effect (Promise Foreign))
+-- signInAndRetrieveDataWithCredential ∷ Auth → AuthCredential → Aff Foreign
 -- signInAndRetrieveDataWithCredential q a b = runPromiseAffE2 _signInAndRetrieveDataWithCredential q a b
 
-foreign import _signInAnonymously ∷ Fn1 Auth (Effect UserCredentials)
-signInAnonymously ∷ Auth → Aff UserCredentials
+foreign import _signInAnonymously ∷ Fn1 Auth (Effect Foreign)
+signInAnonymously ∷ Auth → Aff Foreign
 signInAnonymously q = liftEffect $ runFn1 _signInAnonymously q
 
 foreign import data AuthCredential ∷ Type
-foreign import _signInWithCredential ∷ Fn2 Auth AuthCredential (Effect (Promise UserCredentials))
-signInWithCredential ∷ Auth → AuthCredential → Aff UserCredentials
+foreign import _signInWithCredential ∷ Fn2 Auth AuthCredential (Effect (Promise Foreign))
+signInWithCredential ∷ Auth → AuthCredential → Aff Foreign
 signInWithCredential q a = runPromiseAffE2 _signInWithCredential q a
 
-foreign import _signInWithCustomToken ∷ Fn2 Auth String (Effect (Promise UserCredentials))
-signInWithCustomToken ∷ Auth → String → Aff UserCredentials
+foreign import _signInWithCustomToken ∷ Fn2 Auth String (Effect (Promise Foreign))
+signInWithCustomToken ∷ Auth → String → Aff Foreign
 signInWithCustomToken q a = runPromiseAffE2 _signInWithCustomToken q a
 
-foreign import _signInWithEmailAndPassword ∷ ∀ opts. Fn2 Auth opts (Effect (Promise UserCredentials))
-signInWithEmailAndPassword ∷ ∀ opts a. Row.Union opts a (email ∷ String, password ∷ String) ⇒ Auth → {| opts} → Aff UserCredentials
+foreign import _signInWithEmailAndPassword ∷ ∀ opts. Fn2 Auth opts (Effect (Promise Foreign))
+signInWithEmailAndPassword ∷ ∀ opts a. Row.Union opts a (email ∷ String, password ∷ String) ⇒ Auth → {| opts} → Aff Foreign
 signInWithEmailAndPassword q a = runPromiseAffE2 _signInWithEmailAndPassword q a
 
-foreign import _signInWithEmailLink ∷ ∀ opts. Fn3 Auth String opts (Effect (Promise UserCredentials))
-signInWithEmailLink ∷ ∀ opts a. Row.Union opts a (emailLink ∷ String) ⇒ Auth → String → {| opts} → Aff UserCredentials
+foreign import _signInWithEmailLink ∷ ∀ opts. Fn3 Auth String opts (Effect (Promise Foreign))
+signInWithEmailLink ∷ ∀ opts a. Row.Union opts a (emailLink ∷ String) ⇒ Auth → String → {| opts} → Aff Foreign
 signInWithEmailLink q a b = runPromiseAffE3 _signInWithEmailLink q a b
 
 
@@ -108,8 +107,8 @@ signInWithPhoneNumber ∷ Auth → String → ApplicationVerifier → Aff Confir
 signInWithPhoneNumber q a b = runPromiseAffE3 _signInWithPhoneNumber q a b
 
 foreign import data AuthProvider ∷ Type
-foreign import _signInWithPopup ∷ Fn2 Auth AuthProvider (Effect (Promise UserCredentials))
-signInWithPopup ∷ Auth → AuthProvider → Aff UserCredentials
+foreign import _signInWithPopup ∷ Fn2 Auth AuthProvider (Effect (Promise Foreign))
+signInWithPopup ∷ Auth → AuthProvider → Aff Foreign
 signInWithPopup q a = runPromiseAffE2 _signInWithPopup q a
 
 foreign import _signInWithRedirect ∷ Fn2 Auth AuthProvider (Effect (Promise Unit))
