@@ -14,11 +14,11 @@
 
 # Dependencies
 .psci_modules
-/bower_components/
-/node_modules/
+.spago
+node_modules
 
 # Generated
-/output/
+output
 dist
 *.lock
 *.map
