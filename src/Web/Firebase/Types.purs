@@ -4,7 +4,10 @@ module Web.Firebase.Types where
 
 import Prelude
 
+import Control.Monad.Trans.Class (lift)
 import Data.Generic.Rep (class Generic)
+import Effect.Aff (Aff)
+import Effect.Aff.Class (class MonadAff)
 import Foreign.Class (class Decode, class Encode)
 import Foreign.Generic (Foreign, defaultOptions, genericDecode, genericEncode)
 
@@ -16,6 +19,8 @@ class ToJSON a
 type Key = String
 type Schema = String
 
+class Monad m ⇐ FirebaseImplement m where
+  firebaseRef ∷ m Firebase
 
 newtype FirebaseConfig = FirebaseConfig FirebaseConfigRecord
 

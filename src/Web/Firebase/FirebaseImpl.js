@@ -1,46 +1,43 @@
 'use strict';
 
-var firebase = require("firebase/app");
-require("firebase/auth");
-require("firebase/firestore");
-
-
-exports._initializeApp = function (firebaseConfig, opts) {
+exports._initializeApp = function (firebase, firebaseConfig, opts) {
   return function () {
     return firebase.initializeApp(firebaseConfig, opts.name);
   };
 };
 
-exports._app = function (opts) {
+exports._app = function (firebase, opts) {
   return function () {
     return firebase.app(opts.name);
   };
 };
 
-exports._auth = function (opts) {
+exports._auth = function (firebase, opts) {
   return function () {
     // console.log(app.app);
     return firebase.auth(opts.app);
   };
 };
 
-exports.githubAuthProviderImpl = new firebase.auth.GithubAuthProvider();
+exports.githubAuthProviderImpl = function (firebase) {
+  return function () {
+    return new firebase.auth.GithubAuthProvider();
+  }
+}
 
-exports._database = function (opts) {
+exports._database = function (firebase, opts) {
   return function () {
     return firebase.database(opts.app);
   };
 };
 
-exports._firestore = function (opts) {
+exports._firestore = function (firebase, opts) {
   return function () {
     return firebase.firestore(opts.app);
   };
 };
 
-exports.firebaseRef = firebase;
-
-exports._storage = function () {
+exports._storage = function (firebase) {
   return function () {
     return firebase.storage();
   };

@@ -1,65 +1,110 @@
-module Web.Firebase.Impl where
+  module Web.Firebase.Impl where
 
 -- https://firebase.google.com/docs/reference/js/firebase
 
 import Prelude
 
-import Data.Function.Uncurried (Fn0, Fn1, Fn2, runFn0, runFn1, runFn2)
+
+import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)
 import Effect.Aff (Aff)
+import Effect.Aff.Class (class MonadAff)
 import Effect.Class (liftEffect)
 import Foreign (Foreign)
 import Prim.Row as Row
-import Web.Firebase.Types (class ToJSON, class ToString, App, Auth, Database, Firebase, FirebaseConfig, Firestore, GithubAuthProvider, Storage)
+import Web.Firebase.Types (class FirebaseImplement, class ToJSON, class ToString, App, Auth, Database, Firebase, FirebaseConfig, Firestore, GithubAuthProvider, Storage, firebaseRef)
 
 
-foreign import _initializeApp ∷ ∀ name. Fn2 FirebaseConfig name (Effect App)
-initializeAppWithName ∷ ∀ a a'. Row.Union a a' (name ∷ String) ⇒ FirebaseConfig → {| a} → Aff App
-initializeAppWithName a b = liftEffect $ runFn2 _initializeApp a b
+foreign import _initializeApp ∷ ∀ name. Fn3 Firebase FirebaseConfig name (Effect App)
+initializeAppWithName ∷ ∀ a a' m.
+    Row.Union a a' (name ∷ String)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ FirebaseConfig → {| a} → m App
+initializeAppWithName a b = firebaseRef >>= \fb → liftEffect $ runFn3 _initializeApp fb a b
 
-initializeApp ∷ FirebaseConfig → Aff App
+initializeApp ∷ ∀ m.
+    MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ FirebaseConfig → m App
 initializeApp conf = initializeAppWithName conf {}
 
-foreign import _app ∷ ∀ opts. Fn1 opts (Effect App)
-appWithApp ∷ ∀ opts a. Row.Union opts a (name ∷ String) ⇒ {| opts} → Aff App
-appWithApp a = liftEffect $ runFn1 _app a
+foreign import _app ∷ ∀ opts. Fn2 Firebase opts (Effect App)
+appWithApp ∷ ∀ opts a m.
+    Row.Union opts a (name ∷ String)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ {| opts} → m App
+appWithApp a = firebaseRef >>= \fb → liftEffect $ runFn2 _app fb a
 
-app ∷ Aff App
+app ∷ ∀ opts a m.
+    Row.Union opts a (name ∷ String)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ m App
 app = appWithApp {}
 
-foreign import _auth ∷ ∀ opts. Fn1 opts (Effect Auth)
-authWithApp ∷ ∀ opts a. Row.Union opts a (app ∷ App) ⇒ {| opts} → Aff Auth
-authWithApp a = liftEffect $ runFn1 _auth a
+foreign import _auth ∷ ∀ opts. Fn2 Firebase opts (Effect Auth)
+authWithApp ∷ ∀ opts a m.
+    Row.Union opts a (app ∷ App)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ {| opts} → m Auth
+authWithApp a = firebaseRef >>= \fb → liftEffect $ runFn2 _auth fb a
 
-auth ∷ Aff Auth
+auth ∷ ∀ m.
+    MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ m Auth
 auth = authWithApp {}
 
-foreign import githubAuthProviderImpl ∷ GithubAuthProvider
+foreign import githubAuthProviderImpl ∷ Fn1 Firebase (Effect GithubAuthProvider)
+githubAuthProvider ∷ ∀ m.
+    MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ m GithubAuthProvider
+githubAuthProvider = firebaseRef >>= \fb → liftEffect $ runFn1 githubAuthProviderImpl fb
 
-foreign import _database ∷ ∀ opts. Fn1 opts (Effect Database)
-databaseWithApp ∷ ∀ opts a. Row.Union opts a (app ∷ App) ⇒ {| opts} → Aff Database
-databaseWithApp a = liftEffect $ runFn1 _database a
+foreign import _database ∷ ∀ opts. Fn2 Firebase opts (Effect Database)
+databaseWithApp ∷ ∀ opts a m.
+    Row.Union opts a (app ∷ App)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ {| opts} → m Database
+databaseWithApp a = firebaseRef >>= \fb → liftEffect $ runFn2 _database fb a
 
-database ∷ Aff Database
+database ∷ ∀ m.
+    MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ m Database
 database = databaseWithApp {}
 
-foreign import _firestore ∷ ∀ opts. Fn1 opts (Effect Firestore)
-firesotreWithApp ∷ ∀ opts a. Row.Union opts a (app ∷ App) ⇒ {| opts} → Aff Firestore
-firesotreWithApp a = liftEffect $ runFn1 _firestore a
+foreign import _firestore ∷ ∀ opts. Fn2 Firebase opts (Effect Firestore)
+firesotreWithApp ∷ ∀ opts a m.
+    Row.Union opts a (app ∷ App)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ {| opts} → m Firestore
+firesotreWithApp a = firebaseRef >>= \fb → liftEffect $ runFn2 _firestore fb a
 
-firestore ∷ Aff Firestore
+firestore  ∷ ∀ m.
+    MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ m Firestore
 firestore = firesotreWithApp {}
 
-foreign import _storage ∷ ∀ opts. Fn1 opts (Effect Storage)
-storage ∷ ∀ opts a. Row.Union opts a (app ∷ App) ⇒ {| opts} → Aff Storage
-storage a = liftEffect $ runFn1 _storage a
+foreign import _storage ∷ ∀ opts. Fn2 Firebase opts (Effect Storage)
+storage ∷ ∀ opts a m.
+    Row.Union opts a (app ∷ App)
+  ⇒ MonadAff m
+  ⇒ FirebaseImplement m
+  ⇒ {| opts} → m Storage
+storage a = firebaseRef >>= \fb →  liftEffect $ runFn2 _storage fb a
 
 
 -- Utility
-foreign import firebaseRef ∷ Firebase
-
 foreign import _toJSON ∷ ∀ a. ToJSON a ⇒ a → Effect Foreign
 toJSON ∷ ∀ a. ToJSON a ⇒ a → Aff Foreign
 toJSON a = liftEffect $ runFn1 _toJSON a
