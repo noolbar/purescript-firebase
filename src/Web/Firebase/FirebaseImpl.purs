@@ -4,7 +4,7 @@ module Web.Firebase.Impl where
 
 import Prelude
 
-import Data.Function.Uncurried (Fn0, Fn1, Fn2, runFn0, runFn1, runFn2)
+import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
 import Data.Maybe (Maybe)
 import Data.Nullable (Nullable, toMaybe)
 import Effect (Effect)

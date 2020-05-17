@@ -4,15 +4,12 @@ module Web.Firebase.Auth.GithubAuthProvider where
 
 import Prelude
 
-import Control.Promise (Promise)
-import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
+import Data.Function.Uncurried (Fn2, runFn2)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Effect.Aff.Class (liftAff)
 import Effect.Class (liftEffect)
 import Foreign (Foreign)
-import Prim.Row as Row
-import Web.Firebase.Types (Auth, GithubAuthProvider, OAuthCredential)
+import Web.Firebase.Types (GithubAuthProvider, OAuthCredential)
 
 
 foreign import _addScope ∷ Fn2 GithubAuthProvider String (Effect GithubAuthProvider)
